@@ -1,5 +1,4 @@
 <script>
-    import twemoji from "twemoji";
     import { onMount } from "svelte";
     import {
         auth,
@@ -24,8 +23,6 @@
     $: signedIn = !!user;
 
     onMount(async () => {
-        twemoji.parse(document.body);
-
         king = await getKing();
 
         setInterval(() => {
