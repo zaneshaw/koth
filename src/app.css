@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+img.emoji {
+    @apply inline w-4 h-4 mx-[0.1rem];
+}
+
 :root {
     @apply font-sans text-base font-normal text-neutral-200 bg-neutral-800;
 }
