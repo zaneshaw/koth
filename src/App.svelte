@@ -38,7 +38,7 @@
             </p>
         </div>
 
-        <button on:click={becomeKing} class="!shadow-[#fbbf24]">👑 become the king 👑</button>
+        <button on:click={becomeKing} class="!shadow-[#fbbf24] hover:!text-amber-100 active:!text-amber-200">👑 become the king 👑</button>
     </div>
     <div class="mb-6">
         {#if signedIn}

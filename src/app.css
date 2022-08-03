@@ -39,11 +39,11 @@ button {
 }
 
 button:hover {
-    @apply text-amber-100 shadow-[0_0_15px_-5px_white];
+    @apply shadow-[0_0_15px_-5px_white];
 }
 
 button:active {
-    @apply text-amber-200 shadow-[0_0_15px_0_white];
+    @apply shadow-[0_0_15px_0_white];
 }
 
 code {
