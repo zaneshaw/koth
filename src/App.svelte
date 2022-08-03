@@ -84,7 +84,7 @@
             <button
                 on:click={becomeKing}
                 class="!shadow-[#fbbf24] hover:!text-amber-100 active:!text-amber-200"
-                >👑 become the king 👑</button
+                >👑 capture the hill 👑</button
             >
         {:else}
             <h1>loading...</h1>
