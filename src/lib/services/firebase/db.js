@@ -1,22 +1,40 @@
 import { app } from "./app";
-import { getFirestore, doc, getDoc, setDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 
 export const db = getFirestore(app);
+export const kingRef = doc(db, "data", "king");
 
-export function becomeKing() {
+export function setKing(user) {
     const ref = doc(db, "data", "king");
-    const user = "squidee_";
+    const userRef = doc(db, "users", user.uid);
 
     return new Promise((resolve, reject) => {
         setDoc(ref, {
-            king: user,
+            king: userRef,
             capturedAt: serverTimestamp(),
         }).then((res) => {
-            resolve(user);
+            resolve(user.username);
         }).catch((error) => {
             reject(error);
         });
-    })
+    });
+}
+
+export async function getKing() {
+    const kingRef = doc(db, "data", "king");
+    const kingSnap = await getDoc(kingRef);
+
+    return new Promise(async (resolve, reject) => {
+        if (kingSnap.exists()) {
+            const userRef = kingSnap.data().king;
+            const userSnap = await getDoc(userRef);
+            const userData = userSnap.data();
+
+            resolve(userData.username);
+        } else {
+            reject("User doesn't exist!");
+        }
+    });
 }
 
 export function createUser(data, time) {
@@ -44,5 +62,5 @@ export async function getUser(uid) {
         } else {
             reject("User doesn't exist!");
         }
-    })
+    });
 }
