@@ -31,7 +31,7 @@
     <div>
         <div class="mb-8">
             <h1>
-                <b>{king}</b> is the current king
+                <b>{king}</b> is the king
             </h1>
             <p>
                 and has been for <b>{kingTime}</b>
