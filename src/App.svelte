@@ -1,16 +1,25 @@
 <script>
     import twemoji from "twemoji";
     import { onMount } from "svelte";
-    
+    import {
+        auth,
+        authSignIn,
+        authSignOut,
+    } from "./lib/services/firebase/auth";
+    import { becomeKing, getUser } from "./lib/services/firebase/db";
+    import { onAuthStateChanged } from "firebase/auth";
+
     let king = "squidee_";
     let kingTime = "4 hours";
-
-    const beKing = function() {
-        console.log("asdasd");
-    }
+    let user;
+    $: signedIn = !!user;
 
     onMount(() => {
         twemoji.parse(document.body);
+    });
+
+    onAuthStateChanged(auth, async (_user) => {
+        user = _user ? await getUser(_user.uid) : null;
     });
 </script>
 
@@ -20,15 +29,30 @@
         <h2 class="font-semibold">king of the hill</h2>
     </div>
     <div>
-        <h1><span class="font-semibold">{king}</span> is the current king</h1>
-        <p>and has been for <span class="font-semibold">{kingTime}</span></p>
+        <div class="mb-8">
+            <h1>
+                <span class="font-semibold">{king}</span> is the current king
+            </h1>
+            <p>
+                and has been for <span class="font-semibold">{kingTime}</span>
+            </p>
+        </div>
 
-        <button on:click={beKing} class="my-8">👑 become the king 👑</button>
+        <button on:click={becomeKing}>👑 become the king 👑</button>
     </div>
-    <div>
+    <div class="mb-6">
+        {#if signedIn}
+            <p>signed in as <span class="font-semibold">{user.username}</span></p>
+            <button on:click={authSignOut} class="mb-5">sign out</button>
+        {:else}
+            <button on:click={authSignIn} class="mb-5"
+                >sign in with <span class="font-semibold">github</span></button
+            >
+        {/if}
+
         <p>
             check out the <a
-                href="https://github.com/sveltejs/kit#readme"
+                href="https://github.com/squidee100/koth"
                 target="_blank">source</a
             > for this project
         </p>
