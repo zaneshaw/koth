@@ -11,11 +11,11 @@ img.emoji {
 }
 
 a {
-    @apply font-medium text-blue-500 decoration-inherit
+    @apply font-medium text-blue-500 decoration-inherit;
 }
 
 a:hover {
-    @apply text-blue-600
+    @apply text-blue-400;
 }
 
 b {
