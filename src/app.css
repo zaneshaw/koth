@@ -18,6 +18,10 @@ a:hover {
     @apply text-blue-600
 }
 
+b {
+    @apply font-semibold;
+}
+
 h1 {
     @apply text-5xl;
 }

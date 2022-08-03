@@ -31,10 +31,10 @@
     <div>
         <div class="mb-8">
             <h1>
-                <span class="font-semibold">{king}</span> is the current king
+                <b>{king}</b> is the current king
             </h1>
             <p>
-                and has been for <span class="font-semibold">{kingTime}</span>
+                and has been for <b>{kingTime}</b>
             </p>
         </div>
 
@@ -42,11 +42,11 @@
     </div>
     <div class="mb-6">
         {#if signedIn}
-            <p>signed in as <span class="font-semibold">{user.username}</span></p>
+            <p>signed in as <b>{user.username}</b></p>
             <button on:click={authSignOut} class="mb-5">sign out</button>
         {:else}
             <button on:click={authSignIn} class="mb-5"
-                >sign in with <span class="font-semibold">github</span></button
+                >sign in with <b>github</b></button
             >
         {/if}
 
