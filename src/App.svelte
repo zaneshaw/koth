@@ -14,9 +14,12 @@
     } from "./lib/services/firebase/db";
     import { onAuthStateChanged } from "firebase/auth";
     import { getDoc, onSnapshot } from "firebase/firestore";
+    import { DateTime } from "luxon";
 
-    let king = "loading...";
-    let kingTime = "4 hours";
+    let loading = true;
+    let king;
+    let lastCaptureDate;
+    let lastCaptureText;
     let user;
     $: signedIn = !!user;
 
@@ -24,20 +27,29 @@
         twemoji.parse(document.body);
 
         king = await getKing();
+
+        setInterval(() => {
+            setCapTime();
+        }, 1000);
     });
 
     onSnapshot(kingRef, async () => {
         const kingSnap = await getDoc(kingRef);
 
         if (kingSnap.exists()) {
-            const userRef = kingSnap.data().king;
-            const userSnap = await getDoc(userRef);
+            const kingData = kingSnap.data();
+            const userSnap = await getDoc(kingData.king);
             const userData = userSnap.data();
 
             king = userData.username;
+            const sec = kingData.capturedAt.seconds;
+            lastCaptureDate = DateTime.fromSeconds(sec);
+
+            setCapTime();
+
+            loading = false;
         } else {
             console.error("User doesn't exist!");
-            king = "error";
         }
     });
 
@@ -50,6 +62,10 @@
             king = await setKing(user);
         }
     };
+
+    const setCapTime = async function () {
+        lastCaptureText = lastCaptureDate.toRelative().replace(" ago", "");
+    };
 </script>
 
 <main class="flex flex-col justify-between mx-auto min-h-screen text-center">
@@ -58,20 +74,24 @@
         <h2 class="font-semibold">king of the hill</h2>
     </div>
     <div>
-        <div class="mb-8">
-            <h1>
-                <b>{king}</b> is the <b class="text-amber-300">king</b>
-            </h1>
-            <p>
-                and has been for <b>{kingTime}</b>
-            </p>
-        </div>
+        {#if !loading}
+            <div class="mb-8">
+                <h1>
+                    <b class="text-amber-300">{king}</b> is the king
+                </h1>
+                <p>
+                    and has been for <b>{lastCaptureText}</b>
+                </p>
+            </div>
 
-        <button
-            on:click={becomeKing}
-            class="!shadow-[#fbbf24] hover:!text-amber-100 active:!text-amber-200"
-            >👑 become the king 👑</button
-        >
+            <button
+                on:click={becomeKing}
+                class="!shadow-[#fbbf24] hover:!text-amber-100 active:!text-amber-200"
+                >👑 become the king 👑</button
+            >
+        {:else}
+            <h1>loading...</h1>
+        {/if}
     </div>
     <div class="mb-6">
         {#if signedIn}
