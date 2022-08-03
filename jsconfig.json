@@ -34,5 +34,6 @@
         "src/**/*.d.ts",
         "src/**/*.js",
         "src/**/*.svelte"
-    ]
+    ],
+    "extends": "@tsconfig/svelte/tsconfig.json",
 }
