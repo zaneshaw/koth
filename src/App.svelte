@@ -38,7 +38,7 @@
             </p>
         </div>
 
-        <button on:click={becomeKing}>👑 become the king 👑</button>
+        <button on:click={becomeKing} class="!shadow-[#fbbf24]">👑 become the king 👑</button>
     </div>
     <div class="mb-6">
         {#if signedIn}
