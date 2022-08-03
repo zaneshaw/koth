@@ -49,3 +49,11 @@ button:active {
 code {
     @apply font-mono text-base rounded-md bg-neutral-700 px-1 py-0.5;
 }
+
+code::selection {
+    @apply bg-neutral-600;
+}
+
+::selection {
+    @apply bg-neutral-700;
+}
