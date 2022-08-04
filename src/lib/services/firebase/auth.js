@@ -1,8 +1,9 @@
 import { app } from "./app";
 import { createUser, updateUser } from "./db";
-import { getAuth, signOut, signInWithPopup, GithubAuthProvider, getAdditionalUserInfo } from "firebase/auth";
+import { getAuth, signOut, signInWithPopup, GithubAuthProvider, getAdditionalUserInfo, connectAuthEmulator } from "firebase/auth";
 
 export const auth = getAuth(app);
+connectAuthEmulator(auth, "http://localhost:9099");
 const provider = new GithubAuthProvider();
 
 export async function authSignIn() {
