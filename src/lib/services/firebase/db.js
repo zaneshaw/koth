@@ -1,8 +1,7 @@
 import { app } from "./app";
-import { getFirestore, doc, getDoc, setDoc, serverTimestamp, connectFirestoreEmulator, collection, orderBy, query, limit, getDocs } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, getDocs } from "firebase/firestore";
 
 export const db = getFirestore(app);
-connectFirestoreEmulator(db, "localhost", 8080);
 export const kingRef = doc(db, "data", "king");
 
 export function setKing(user) {
