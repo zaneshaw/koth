@@ -15,9 +15,10 @@ export async function authSignIn() {
                 const userObj = {
                     email: user.email,
                     pfp: user.photoURL,
+                    score: 0,
                     signedInAt: user.metadata.lastSignInTime,
                     uid: user.uid,
-                    username: userInfo.username,
+                    username: userInfo.username || "null",
                 }
 
                 userInfo.isNewUser ? createUser(userObj, user.metadata.creationTime) : updateUser(userObj);

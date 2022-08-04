@@ -34,6 +34,10 @@ h3 {
     @apply text-3xl;
 }
 
+h4 {
+    @apply text-xl;
+}
+
 button {
     @apply py-3 px-5 bg-neutral-900 rounded-lg font-medium cursor-pointer transition;
 }

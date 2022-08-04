@@ -10,21 +10,23 @@
         setKing,
         getKing,
         kingRef,
+        getTopUsers,
     } from "./lib/services/firebase/db";
     import { onAuthStateChanged } from "firebase/auth";
     import { getDoc, onSnapshot } from "firebase/firestore";
     import { DateTime } from "luxon";
+    import Leaderboard from "./lib/components/Leaderboard.svelte";
 
     let loading = true;
     let king;
     let lastCaptureDate;
     let lastCaptureText;
     let user;
+    let topUsers;
+    let kingOffset;
     $: signedIn = !!user;
 
     onMount(async () => {
-        king = await getKing();
-
         setInterval(() => {
             setCapTime();
         }, 1000);
@@ -32,21 +34,24 @@
 
     onSnapshot(kingRef, async () => {
         const kingSnap = await getDoc(kingRef);
-
+        
         if (kingSnap.exists()) {
             const kingData = kingSnap.data();
             const userSnap = await getDoc(kingData.king);
             const userData = userSnap.data();
-
+            
             king = userData.username;
-            const sec = kingData.capturedAt.seconds;
-            lastCaptureDate = DateTime.fromSeconds(sec);
-
-            setCapTime();
+            if (kingData.capturedAt) {
+                const sec = kingData.capturedAt.seconds;
+                lastCaptureDate = DateTime.fromSeconds(sec);
+                
+                setCapTime();
+                updateLeaderboard();
+            }
 
             loading = false;
         } else {
-            console.error("User doesn't exist!");
+            loading = false;
         }
     });
 
@@ -55,13 +60,25 @@
     });
 
     const becomeKing = async function () {
-        if (signedIn && user.username != king) {
-            king = await setKing(user);
+        const _king = await getKing();
+
+        if ((signedIn && user.username != _king) || !_king) {
+            // Update from local data
+            king = user.username;
+
+            await setKing(user);
         }
     };
 
     const setCapTime = async function () {
+        kingOffset = Math.floor(
+            DateTime.now().diff(lastCaptureDate, "seconds").values.seconds
+        );
         lastCaptureText = lastCaptureDate.toRelative().replace(" ago", "");
+    };
+
+    const updateLeaderboard = async function () {
+        topUsers = await getTopUsers(5, king, kingOffset);
     };
 </script>
 
@@ -72,13 +89,26 @@
     </div>
     <div>
         {#if !loading}
+            {#if topUsers}
+                <Leaderboard
+                    styleClass="absolute top-3 right-3"
+                    users={topUsers}
+                    {king}
+                    on:update={updateLeaderboard}
+                />
+            {/if}
+
             <div class="mb-8">
-                <h1>
-                    <b class="text-amber-300">{king}</b> is the king
-                </h1>
-                <p>
-                    and has been for <b>{lastCaptureText}</b>
-                </p>
+                {#if king}
+                    <h1>
+                        <b class="text-amber-300">{king}</b> is the king
+                    </h1>
+                    <p>
+                        and has been for <b>{lastCaptureText}</b>
+                    </p>
+                {:else}
+                    <h1>No one is the king</h1>
+                {/if}
             </div>
 
             <button

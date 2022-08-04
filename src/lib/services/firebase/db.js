@@ -1,5 +1,5 @@
 import { app } from "./app";
-import { getFirestore, doc, getDoc, setDoc, serverTimestamp, connectFirestoreEmulator } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp, connectFirestoreEmulator, collection, orderBy, query, limit, getDocs } from "firebase/firestore";
 
 export const db = getFirestore(app);
 connectFirestoreEmulator(db, "localhost", 8080);
@@ -33,7 +33,7 @@ export async function getKing() {
 
             resolve(userData.username);
         } else {
-            reject("User doesn't exist!");
+            resolve("King doesn't exist!");
         }
     });
 }
@@ -64,4 +64,26 @@ export async function getUser(uid) {
             reject("User doesn't exist!");
         }
     });
+}
+
+export async function getTopUsers(count, king, kingOffset) {
+    const ref = collection(db, "users");
+    const snap = await getDocs(ref);
+    let arr = [];
+    let sArr = [];
+
+    snap.docs.forEach(doc => {
+        const data = doc.data();
+        if (data.username == king) {
+            data.score += kingOffset;
+        }
+
+        arr.push(data);
+    });
+
+    sArr = arr.sort((a, b) => {
+        return b.score - a.score;
+    });
+
+    return sArr.slice(0, count);
 }
