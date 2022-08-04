@@ -34,17 +34,17 @@
 
     onSnapshot(kingRef, async () => {
         const kingSnap = await getDoc(kingRef);
-        
+
         if (kingSnap.exists()) {
             const kingData = kingSnap.data();
             const userSnap = await getDoc(kingData.king);
             const userData = userSnap.data();
-            
+
             king = userData.username;
             if (kingData.capturedAt) {
                 const sec = kingData.capturedAt.seconds;
                 lastCaptureDate = DateTime.fromSeconds(sec);
-                
+
                 setCapTime();
                 updateLeaderboard();
             }
@@ -71,10 +71,12 @@
     };
 
     const setCapTime = async function () {
-        kingOffset = Math.floor(
-            DateTime.now().diff(lastCaptureDate, "seconds").values.seconds
-        );
-        lastCaptureText = lastCaptureDate.toRelative().replace(" ago", "");
+        if (lastCaptureDate) {
+            kingOffset = Math.floor(
+                DateTime.now().diff(lastCaptureDate, "seconds").values.seconds
+            );
+            lastCaptureText = lastCaptureDate.toRelative().replace(" ago", "");
+        }
     };
 
     const updateLeaderboard = async function () {
